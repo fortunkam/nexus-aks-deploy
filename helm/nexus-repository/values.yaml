@@ -1,0 +1,60 @@
+# Default values for nexus-repository.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: sonatype/nexus3
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "3.46.0"
+
+
+imageCredentials:
+  registry: "REPLACE_ME"
+  username: "REPLACE_ME"
+  password: "REPLACE_ME"
+
+initJob:
+  repository: "REPLACEME"
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "REPLACEME"
+
+storage:
+  accountName: "STORAGEACCOUNT"
+  primaryKey: "PRIMARYKEY"
+  shareName: "SHARENAME"
+  resourceGroupName: "RESOURCEGROUP"
+
+ingress:
+  enabled: false
+  nexus:
+    hostName: "HOSTNAME"
+    ingressClassName: "CLASSNAME"
+    certClusterIssuerSuffix: "-staging"
+
+nexus:
+  admin:
+    username: "admin"
+    password: "REPLACEME"
+  serviceUri: "REPLACEME"
+
+nexus-ingress:
+  namespace: "NGINXREPLACEME"
+  controller:
+    ingressClassByName: true
+    ingressClassResource:
+      name: "NGINXREPLACEME"
+      controllerValue: "NGINXREPLACEME"
+      enabled: true
+    replicaCount: 2
+    service:
+      externalTrafficPolicy: "Local"
+      loadBalancerIP: "NGINXREPLACEME"
+      annotations:
+        service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"
+        service.beta.kubernetes.io/azure-dns-label-name: "NGINXREPLACEME"
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: "NGINXREPLACEME"
+
+
+
+

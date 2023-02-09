@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "nexus-repository.fullname" . }}
+  name: {{ include "nexus-repository.fullname" . }}-svc
+  namespace: {{ include "nexus-repository.fullname" . }}
+spec:
+  ports:
+  - name: nexusadmin
+    port: 80
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: {{ include "nexus-repository.fullname" . }}
+  type: ClusterIP

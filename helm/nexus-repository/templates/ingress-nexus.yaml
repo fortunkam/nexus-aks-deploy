@@ -1,0 +1,28 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "nexus-repository.fullname" . }}-nexus-ingress
+  namespace: {{ include "nexus-repository.fullname" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    cert-manager.io/cluster-issuer: {{ include "nexus-repository.fullname" . }}-nexus-letsencrypt{{ .Values.ingress.nexus.certClusterIssuerSuffix }}
+spec:
+  ingressClassName: {{ .Values.ingress.nexus.ingressClassName }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.nexus.hostName }}
+    secretName: {{ include "nexus-repository.fullname" . }}-nexus-letsencrypt{{ .Values.ingress.nexus.certClusterIssuerSuffix }}
+  rules:
+  - host: {{ .Values.ingress.nexus.hostName }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "nexus-repository.fullname" . }}-svc
+            port:
+              number: 80
+{{- end }}
