@@ -14,7 +14,7 @@ variable "init_container_tag" {
 }
 
 variable "nexus_admin_password" {
-    description = "The password to be used for the admin user on the nexus repository"
-    type        = string
-    sensitive = true
+  description = "The password to be used for the admin user on the nexus repository"
+  type        = string
+  sensitive   = true
 }

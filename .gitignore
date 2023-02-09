@@ -43,3 +43,5 @@ terraform.rc
 !credentials-template.tfvars
 
 /helm/**/*.tgz
+
+**/*.tfplan

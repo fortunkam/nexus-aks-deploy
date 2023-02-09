@@ -10,4 +10,7 @@ locals {
   nexus_public_ip_name              = "${var.resource_prefix}-nexus-ip"
   nexus_public_ip_domain_name_label = "${var.resource_prefix}-nexus-ip-ingress"
   nexus_ingress_class_name          = "${var.resource_prefix}-nexus"
-}
+
+  nexus_uri               = "${azurerm_public_ip.nexus_ingress.domain_name_label}.${azurerm_resource_group.resource_group.location}.cloudapp.azure.com"
+  nexus_readiness_timeout = 900
+}   

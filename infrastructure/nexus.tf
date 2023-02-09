@@ -1,14 +1,9 @@
-locals {
-    nexus_uri = "${azurerm_public_ip.nexus_ingress.domain_name_label}.${azurerm_resource_group.resource_group.location}.cloudapp.azure.com"
-    nexus_readiness_timeout = 900
-}
-
 resource "helm_release" "nexus" {
-  name       = "nexus"
-  chart      = "../helm/nexus-repository"
-  timeout       = local.nexus_readiness_timeout
-  wait          = true
-  wait_for_jobs = true
+  name              = "nexus"
+  chart             = "../helm/nexus-repository"
+  timeout           = local.nexus_readiness_timeout
+  wait              = true
+  wait_for_jobs     = true
   dependency_update = true
 
   set {
@@ -17,7 +12,7 @@ resource "helm_release" "nexus" {
   }
   set {
     name  = "initJob.tag"
-    value = "${var.init_container_tag}"
+    value = var.init_container_tag
   }
   set {
     name  = "storage.accountName"
@@ -82,7 +77,7 @@ resource "helm_release" "nexus" {
 
   set {
     name  = "nexus-ingress.controller.ingressClassResource.name"
-    value = "${local.nexus_ingress_class_name}"
+    value = local.nexus_ingress_class_name
   }
   set {
     name  = "nexus-ingress.controller.ingressClassResource.controllerValue"
@@ -104,5 +99,79 @@ resource "helm_release" "nexus" {
   depends_on = [
     azurerm_role_assignment.aks_ip_contributor_role,
     null_resource.push_nexus_initializer
+  ]
+}
+
+resource "nexus_security_anonymous" "system" {
+  enabled = false
+  user_id = "anonymous"
+  depends_on = [
+    helm_release.nexus
+  ]
+}
+
+resource "nexus_repository_nuget_proxy" "nuget_org" {
+  name   = "nuget-org"
+  online = true
+
+  nuget_version            = "V3"
+  query_cache_item_max_age = 3600
+
+  storage {
+    blob_store_name                = "default"
+    strict_content_type_validation = true
+  }
+
+  proxy {
+    remote_url       = "https://api.nuget.org/v3/index.json"
+    content_max_age  = 1440
+    metadata_max_age = 1440
+  }
+
+  negative_cache {
+    enabled = true
+    ttl     = 1440
+  }
+
+  http_client {
+    blocked    = false
+    auto_block = true
+  }
+  depends_on = [
+    helm_release.nexus
+  ]
+}
+
+resource "nexus_repository_nuget_hosted" "internal" {
+  name   = "nuget-internal"
+  online = true
+
+  storage {
+    blob_store_name                = "default"
+    strict_content_type_validation = true
+    write_policy                   = "ALLOW"
+  }
+  depends_on = [
+    helm_release.nexus
+  ]
+}
+
+resource "nexus_repository_nuget_group" "group" {
+  name   = "nuget-group"
+  online = true
+
+  group {
+    member_names = [
+      nexus_repository_nuget_hosted.internal.name,
+      nexus_repository_nuget_proxy.nuget_org.name,
+    ]
+  }
+
+  storage {
+    blob_store_name                = "default"
+    strict_content_type_validation = true
+  }
+  depends_on = [
+    helm_release.nexus
   ]
 }

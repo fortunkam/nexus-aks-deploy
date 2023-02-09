@@ -25,12 +25,12 @@ resource "helm_release" "cert_manager" {
   ]
 }
 
-resource "helm_release" "aks_ssl_addons" {
-  name        = "lets-encrypt-ssl"
-  chart       = "../helm/lets-encrypt-ssl"
-  description = "Helm chart for let's encrypt SSL certificate issuers for Kubernetes clusters. Installed at ${timestamp()}"
-  lint        = true
-  depends_on = [
-    helm_release.cert_manager
-  ]
-}
+# resource "helm_release" "aks_ssl_addons" {
+#   name        = "lets-encrypt-ssl"
+#   chart       = "../helm/lets-encrypt-ssl"
+#   description = "Helm chart for let's encrypt SSL certificate issuers for Kubernetes clusters. Installed at ${timestamp()}"
+#   lint        = true
+#   depends_on = [
+#     helm_release.cert_manager
+#   ]
+# }

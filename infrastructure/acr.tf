@@ -5,14 +5,14 @@ resource "azurerm_container_registry" "acr" {
   sku                 = "Standard"
   admin_enabled       = true
 
-  
+
 }
 
 resource "null_resource" "push_nexus_initializer" {
-    triggers = {
-        build_number = "${var.init_container_tag}"
-    }
-    provisioner "local-exec" {
+  triggers = {
+    build_number = "${var.init_container_tag}"
+  }
+  provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = "../src/nexus-initializer"
     command     = <<-EOT
