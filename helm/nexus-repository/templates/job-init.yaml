@@ -34,5 +34,5 @@ spec:
           claimName: {{ include "nexus-repository.fullname" . }}-pvc
   backoffLimit: 0
   completions: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: 10
   activeDeadlineSeconds: 1200
