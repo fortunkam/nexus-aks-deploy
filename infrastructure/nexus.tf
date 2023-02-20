@@ -83,6 +83,7 @@ resource "helm_release" "nexus" {
     name  = "nexus-ingress.controller.ingressClassResource.controllerValue"
     value = "k8s.io/${local.nexus_ingress_class_name}"
   }
+
   set {
     name  = "nexus-ingress.controller.service.loadBalancerIP"
     value = azurerm_public_ip.nexus_ingress.ip_address
@@ -95,8 +96,14 @@ resource "helm_release" "nexus" {
     name  = "nexus-ingress.controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-resource-group"
     value = azurerm_resource_group.resource_group.name
   }
+  set {
+    name  = "agentPoolNodeSelector"
+    value = "nexus"
+  }
 
   depends_on = [
+    azurerm_public_ip.nexus_ingress,
+    azurerm_kubernetes_cluster_node_pool.node_pools,
     azurerm_role_assignment.aks_ip_contributor_role,
     null_resource.push_nexus_initializer
   ]

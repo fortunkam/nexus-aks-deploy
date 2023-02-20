@@ -4,13 +4,19 @@ locals {
   storage_share_name                = "nexusdata"
   acr_name                          = "${var.resource_prefix}acr"
   aks_name                          = "${var.resource_prefix}-aks"
+  mi_aks_name                       = "${var.resource_prefix}-aks-mi"
   aks_kubernetes_version            = "1.24.6"
-  aks_default_nodepool_vm_sku       = "Standard_D8s_v5"
+  aks_default_nodepool_vm_sku       = "Standard_DS2_v2"
   aks_node_resource_group_name      = "${var.resource_prefix}-aks-resource"
   nexus_public_ip_name              = "${var.resource_prefix}-nexus-ip"
-  nexus_public_ip_domain_name_label = "${var.resource_prefix}-nexus-ip-ingress"
+  nexus_public_ip_domain_name_label = "${var.resource_prefix}-nexus-ip-ingress-test"
   nexus_ingress_class_name          = "${var.resource_prefix}-nexus"
 
   nexus_uri               = "${azurerm_public_ip.nexus_ingress.domain_name_label}.${azurerm_resource_group.resource_group.location}.cloudapp.azure.com"
   nexus_readiness_timeout = 900
+
+  vnet_name = "${var.resource_prefix}-vnet"
+  aks_subnet_name = "${var.resource_prefix}-aks"
+  new_subnet_address_prefixes = [ "10.1.1.0/24" ]
+  new_vnet_address_space = [ "10.1.0.0/16" ]
 }   

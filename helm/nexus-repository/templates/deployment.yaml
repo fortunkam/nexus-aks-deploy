@@ -16,6 +16,8 @@ spec:
       labels:
         app: {{ include "nexus-repository.fullname" . }}
     spec:
+      nodeSelector:
+        agentpool: {{.Values.agentPoolNodeSelector }}
       containers:
       - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}

@@ -6,6 +6,8 @@ metadata:
 spec:
   template:
     spec:
+      nodeSelector:
+        agentpool: {{.Values.agentPoolNodeSelector }}
       imagePullSecrets:
       - name: {{ include "nexus-repository.fullname" . }}-secret-docker
       restartPolicy: Never

@@ -1,3 +1,3 @@
-resource_prefix        = "brgsnex"
+resource_prefix        = "brgnx"
 resource_location = "uksouth"
-init_container_tag = "1.0.0"
+init_container_tag = "1.2"
